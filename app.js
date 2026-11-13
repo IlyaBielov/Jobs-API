@@ -6,6 +6,9 @@ const app = express();
 // connectDB
 const connectDB = require('./db/connect'); // обгортка над mongoose.connect(url)
 
+// auth
+const authenticate = require('./middleware/authentication');
+
 // routers
 const authRouter = require('./routes/auth');
 const jobRouter = require('./routes/jobs');
@@ -19,7 +22,7 @@ app.use(express.json());
 
 // routes
 app.use('/api/v1/auth', authRouter); // публічні: register / login
-app.use('/api/v1/jobs', jobRouter); // пізніше сховаємо за auth middleware
+app.use('/api/v1/jobs', authenticate, jobRouter); // authenticate стоїть перед усіма jobs-маршрутами
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

@@ -8,11 +8,11 @@ const getJob = async (req, res, next) => {
 }
 
 const createJob = async (req, res, next) => {
-  res.send('createJob')
+  res.send(req.user) // тимчасово: перевіряємо, що authenticate поклав { userId, name }
 }
 
 const updateJob = async (req, res, next) => {
-  res.send('updateJobc')
+  res.send('updateJob')
 }
 
 const deleteJob = async (req, res, next) => {
