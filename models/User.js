@@ -6,21 +6,22 @@ const UserSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'Please provide a name'], // [значення, повідомлення помилки]
-    minlength: 3,
-    maxlength: 50,
+    minlength: [3, 'Name must be at least 3 characters'],
+    maxlength: [50, 'Name cannot be more than 50 characters'],
   },
   email: {
     type: String,
     match: [
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      'Please provide a valid email', // 2-й елемент масиву — текст ValidationError замість "Path `email` is invalid"
     ],
-    required: [true, 'Please provide a email'],
+    required: [true, 'Please provide an email'],
     unique: true, // не валідатор, а унікальний індекс у MongoDB
   },
   password: {
     type: String,
     required: [true, 'Please provide a password'],
-    minlength: 6,
+    minlength: [6, 'Password must be at least 6 characters'],
   }
 })
 
