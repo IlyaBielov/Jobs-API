@@ -11,7 +11,8 @@ A completed reference implementation lives at `../final/` — consult it when yo
 ## Commands
 
 - `npm install` — install dependencies
-- `npm start` — runs `nodemon app.js` (auto-reloads on file changes)
+- `npm run dev` — runs `nodemon app.js` (auto-reloads on file changes) — use this locally
+- `npm start` — `node app.js` (production; hosting runs this, nodemon is only a devDependency)
 
 There is no lint or test setup in this starter.
 

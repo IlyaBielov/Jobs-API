@@ -36,6 +36,11 @@ app.use(helmet()); // до роутів — заголовки отримує к
 app.use(cors()); // без опцій — origin '*'; у проді краще cors({ origin: 'https://...' })
 app.use(xss()); // після express.json() — чистити можна лише вже розпарсений body
 
+// корінь — щоб хостинг/браузер на / бачили, що сервер живий (інакше 404 від notFound)
+app.get('/', (req, res) => {
+  res.send('<h1>Jobs API</h1>');
+});
+
 // routes
 app.use('/api/v1/auth', authRouter); // публічні: register / login
 app.use('/api/v1/jobs', authenticate, jobRouter); // authenticate стоїть перед усіма jobs-маршрутами
