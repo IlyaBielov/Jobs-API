@@ -9,8 +9,9 @@ const rateLimiter = require('express-rate-limit'); // ліміт запитів 
 
 // Swagger
 const swaggerUI = require('swagger-ui-express'); // віддає готовий HTML/JS інтерфейс документації
+const path = require('path');
 const YAML = require('yamljs'); // swagger-ui чекає JS-об'єкт, а в нас YAML-файл
-const swaggerDocument = YAML.load('./swagger.yaml'); // шлях від cwd — npm start запускається з кореня
+const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yaml')); // від папки app.js, а не від cwd — працює з будь-якої директорії
 
 const express = require('express');
 const app = express();

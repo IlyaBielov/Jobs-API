@@ -3,11 +3,9 @@ info:
   title: Jobs API
   description: Jobs API — register/login + CRUD для власних job (JWT Bearer)
   version: '1.0'
-servers:
-  - url: https://jobs-api-ope4.onrender.com/api/v1
-    description: Production (Render)
-  - url: http://localhost:5000/api/v1
-    description: Local
+servers: # відносний URL — Try it out іде на той самий домен, що й /api-docs (локально і на Render; CSP helmet не блокує)
+  - url: /api/v1
+    description: Current host
 paths:
   /auth/register:
     post:
@@ -19,7 +17,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterUserRequest'
+              $ref: '#/components/schemas/RegisterUserRequest' # схема описана один раз у components
             example:
               name: Peter
               email: peter@mail.com
@@ -29,7 +27,7 @@ paths:
           description: Created
         '400':
           description: Validation error or duplicate email
-      security: []
+      security: [] # перекриває глобальний security — register без токена
   /auth/login:
     post:
       tags: [Auth]
@@ -77,7 +75,7 @@ paths:
         '200':
           description: OK
   /jobs/{id}:
-    parameters:
+    parameters: # на рівні шляху — діє для get/patch/delete одразу
       - in: path
         name: id
         schema:
@@ -127,7 +125,7 @@ components:
   schemas:
     RegisterUserRequest:
       type: object
-      required: [name, email, password]
+      required: [name, email, password] # дублює required зі схеми Mongoose — тримати в синхроні
       properties:
         name:
           type: string
@@ -161,11 +159,11 @@ components:
         status:
           type: string
           enum: [interview, declined, pending]
-  securitySchemes:
+  securitySchemes: # кнопка Authorize; UI сам додає 'Authorization: Bearer <token>'
     httpBearer:
       type: http
       scheme: bearer
-security:
+security: # глобально: усі ендпоінти потребують токен, якщо не перекрито
   - httpBearer: []
 tags:
   - name: Auth
