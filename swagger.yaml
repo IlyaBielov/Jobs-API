@@ -1,0 +1,172 @@
+openapi: 3.0.0
+info:
+  title: Jobs API
+  description: Jobs API — register/login + CRUD для власних job (JWT Bearer)
+  version: '1.0'
+servers:
+  - url: https://jobs-api-ope4.onrender.com/api/v1
+    description: Production (Render)
+  - url: http://localhost:5000/api/v1
+    description: Local
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register User
+      operationId: RegisterUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUserRequest'
+            example:
+              name: Peter
+              email: peter@mail.com
+              password: secret
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Validation error or duplicate email
+      security: []
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login User
+      operationId: LoginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUserRequest'
+            example:
+              email: john@mail.com
+              password: secret
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Invalid credentials
+      security: []
+  /jobs:
+    post:
+      tags: [Jobs]
+      summary: Create Job
+      operationId: CreateJob
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJobRequest'
+            example:
+              company: google
+              position: intern
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Validation error
+    get:
+      tags: [Jobs]
+      summary: Get All Jobs
+      operationId: GetAllJobs
+      responses:
+        '200':
+          description: OK
+  /jobs/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: the job id
+    get:
+      tags: [Jobs]
+      summary: Get Single Job
+      operationId: GetSingleJob
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Job not found
+    patch:
+      tags: [Jobs]
+      summary: Update Job
+      operationId: UpdateJob
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateJobRequest'
+            example:
+              company: google
+              position: senior intern
+              status: interview
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Validation error
+        '404':
+          description: Job not found
+    delete:
+      tags: [Jobs]
+      summary: Delete Job
+      operationId: DeleteJob
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Job not found
+components:
+  schemas:
+    RegisterUserRequest:
+      type: object
+      required: [name, email, password]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    LoginUserRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    CreateJobRequest:
+      type: object
+      required: [company, position]
+      properties:
+        company:
+          type: string
+        position:
+          type: string
+    UpdateJobRequest:
+      type: object
+      properties:
+        company:
+          type: string
+        position:
+          type: string
+        status:
+          type: string
+          enum: [interview, declined, pending]
+  securitySchemes:
+    httpBearer:
+      type: http
+      scheme: bearer
+security:
+  - httpBearer: []
+tags:
+  - name: Auth
+  - name: Jobs

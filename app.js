@@ -7,6 +7,11 @@ const cors = require('cors'); // дозволяє браузерні запит�
 const xss = require('xss-clean'); // екранує HTML/<script> у req.body, query, params
 const rateLimiter = require('express-rate-limit'); // ліміт запитів з одного IP — захист від перебору/спаму
 
+// Swagger
+const swaggerUI = require('swagger-ui-express'); // віддає готовий HTML/JS інтерфейс документації
+const YAML = require('yamljs'); // swagger-ui чекає JS-об'єкт, а в нас YAML-файл
+const swaggerDocument = YAML.load('./swagger.yaml'); // шлях від cwd — npm start запускається з кореня
+
 const express = require('express');
 const app = express();
 
@@ -38,8 +43,9 @@ app.use(xss()); // після express.json() — чистити можна ли�
 
 // корінь — щоб хостинг/браузер на / бачили, що сервер живий (інакше 404 від notFound)
 app.get('/', (req, res) => {
-  res.send('<h1>Jobs API</h1>');
+  res.send('<h1>Jobs API</h1><a href="/api-docs">Documentation</a>');
 });
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument)); // serve — статика UI, setup — сторінка з нашою специфікацією
 
 // routes
 app.use('/api/v1/auth', authRouter); // публічні: register / login
