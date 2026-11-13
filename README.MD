@@ -36,26 +36,26 @@ Then open http://localhost:5000/api-docs.
 
 Base URL: `/api/v1`. All `/jobs` routes require `Authorization: Bearer <token>`.
 
-| Method | Route | Description |
-|---|---|---|
-| POST | `/auth/register` | Register — returns `{ user: { name }, token }` |
-| POST | `/auth/login` | Login — returns `{ user: { name }, token }` |
-| GET | `/jobs` | All jobs of the current user — `{ jobs, count }` |
-| POST | `/jobs` | Create job (`company`, `position`, optional `status`) |
-| GET | `/jobs/:id` | Single job |
-| PATCH | `/jobs/:id` | Update job (partial) |
-| DELETE | `/jobs/:id` | Delete job |
+| Method | Route            | Description                                           |
+|--------|------------------|-------------------------------------------------------|
+| POST   | `/auth/register` | Register — returns `{ user: { name }, token }`        |
+| POST   | `/auth/login`    | Login — returns `{ user: { name }, token }`           |
+| GET    | `/jobs`          | All jobs of the current user — `{ jobs, count }`      |
+| POST   | `/jobs`          | Create job (`company`, `position`, optional `status`) |
+| GET    | `/jobs/:id`      | Single job                                            |
+| PATCH  | `/jobs/:id`      | Update job (partial)                                  |
+| DELETE | `/jobs/:id`      | Delete job                                            |
 
 `status` is one of `interview`, `declined`, `pending` (default).
 
 Errors always come back as `{ msg }`:
 
-| Case | Status |
-|---|---|
-| Mongoose validation error | 400 |
-| Duplicate email (code 11000) | 400 |
-| Missing / invalid token, wrong credentials | 401 |
-| Job not found, or invalid id (CastError) | 404 |
+| Case                                       | Status |
+|--------------------------------------------|--------|
+| Mongoose validation error                  | 400    |
+| Duplicate email (code 11000)               | 400    |
+| Missing / invalid token, wrong credentials | 401    |
+| Job not found, or invalid id (CastError)   | 404    |
 
 ## Project structure
 
@@ -72,7 +72,9 @@ errors/                   # CustomAPIError + BadRequest / Unauthenticated / NotF
 swagger.yaml              # OpenAPI 3.0 spec served at /api-docs
 ```
 
-## Deployment (Render)
+## Deployment ([Render](https://render.com))
+
+Live: https://jobs-api-ope4.onrender.com · Docs: https://jobs-api-ope4.onrender.com/api-docs
 
 - Build command: `npm install`, start command: `npm start`
 - Environment: `MONGO_URI`, `JWT_SECRET`, `JWT_LIFETIME` (`PORT` is set by Render)
