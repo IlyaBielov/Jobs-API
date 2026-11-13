@@ -32,13 +32,14 @@ const updateJob = async (req, res, next) => {
     params: { id: jobId },
   } = req;
 
+  // undefined (поле не передали) — ок для PATCH; лише явний '' вважаємо помилкою
   if (company === '' || position === '') { // 400 з людським текстом ще до запиту в БД
     throw new BadRequestError('Company or Position fields cannot be empty');
   }
 
   const job = await Job.findOneAndUpdate(
     { _id: jobId, createdBy: userId }, // оновлюємо лише свою job
-    req.body,
+    req.body, // Mongoose загортає в $set — змінюються лише передані поля (PATCH)
     { returnDocument: 'after', runValidators: true } // Mongoose 9: замість { new: true }; валідатори схеми й тут
   );
   if (!job) {

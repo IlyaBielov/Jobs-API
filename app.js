@@ -1,5 +1,12 @@
 require('dotenv').config();
 require('express-async-errors');
+
+// extra security packages
+const helmet = require('helmet'); // безпечні HTTP-заголовки (CSP, X-Frame-Options, без X-Powered-By)
+const cors = require('cors'); // дозволяє браузерні запити з інших доменів (фронтенд)
+const xss = require('xss-clean'); // екранує HTML/<script> у req.body, query, params
+const rateLimiter = require('express-rate-limit'); // ліміт запитів з одного IP — захист від перебору/спаму
+
 const express = require('express');
 const app = express();
 
@@ -17,8 +24,17 @@ const jobRouter = require('./routes/jobs');
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
+app.set('trust proxy', 1); // 1 проксі перед нами (Render/Heroku): req.ip береться з X-Forwarded-For
+app.use(
+  rateLimiter({
+    windowMs: 15 * 60 * 1000, // вікно 15 хвилин
+    max: 100, // до 100 запитів з IP за вікно (у express-rate-limit 7 — limit)
+  })
+); // першим — відсікаємо зайві запити ще до парсингу JSON
 app.use(express.json());
-// extra packages
+app.use(helmet()); // до роутів — заголовки отримує кожна відповідь, навіть 404
+app.use(cors()); // без опцій — origin '*'; у проді краще cors({ origin: 'https://...' })
+app.use(xss()); // після express.json() — чистити можна лише вже розпарсений body
 
 // routes
 app.use('/api/v1/auth', authRouter); // публічні: register / login
